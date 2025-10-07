@@ -106,17 +106,61 @@
             margin-bottom: 10px;
         }
 
-        .contato a {
-            display: inline-block;
-            margin: 10px;
-            color: #1e1e2f;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
+        .contato {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .contato a:hover {
-            color: #00bcd4;
+        .contato form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .contato input,
+        .contato textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .contato input:focus,
+        .contato textarea:focus {
+            outline: none;
+            border-color: #00bcd4;
+        }
+
+        .contato textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .contato button {
+            background-color: #1e1e2f;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .contato button:hover {
+            background-color: #00bcd4;
+        }
+
+        .contato p {
+            margin-bottom: 20px;
+            color: #555;
         }
 
         footer {
@@ -128,6 +172,9 @@
             font-size: 0.9rem;
         }
     </style>
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 
 <body>
@@ -156,25 +203,67 @@
                 <h3>Portifólio</h3>
                 <p>Um portifólio sobre meus conhecimentos e projetos.</p>
             </div>
-<div class="projeto">
-    <h3>Site de Vendas de Componentes Eletrônicos</h3>
-    <p>Site de loja de venda e entrega de componentes eletrônicos.</p>
-    <img src="img/Componentes.jpeg" alt="Imagem de componentes eletrônicos" style="width:100%; border-radius:10px; margin-top:10px;">
-</div>
+            <div class="projeto">
+                <h3>Site de Vendas de Componentes Eletrônicos</h3>
+                <p>Site de loja de venda e entrega de componentes eletrônicos.</p>
+                <img src="img/Componentes.jpeg" alt="Imagem de componentes eletrônicos" style="width:100%; border-radius:10px; margin-top:10px;">
             </div>
         </div>
     </section>
 
     <section id="contato" class="contato">
         <h2>Contato</h2>
-        <p>Entre em contato comigo através das redes abaixo:</p>
-        <a href="mailto:felipevieirar@yahoo.com.br">E-mail</a> |
-        <a href="https://www.linkedin.com/in/felipe-vieira-undefined-565800301" target="_blank" rel="noopener noreferrer">LinkedIn</a> |
-        <a href="https://github.com/FelipeVieiraRodrigues" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <p>Entre em contato comigo preenchendo o formulário abaixo. Sua mensagem será enviada diretamente para o meu e-mail via EmailJS.</p>
+        <form id="contact-form">
+
+            <input type="hidden" name="time" value="">
+            <input type="text" name="user_name" placeholder="Seu Nome" required />
+            <input type="email" name="user_email" placeholder="Seu E-mail" required />
+            <textarea name="message" placeholder="Sua Mensagem" required></textarea>
+            <button type="submit">Enviar Mensagem</button>
+        </form>
+
+        <p style="margin-top: 20px; font-size: 0.9rem; color: #555;">
+            Ou me encontre em: 
+            <a href="https://www.linkedin.com/in/felipe-vieira-undefined-565800301" target="_blank" rel="noopener noreferrer" style="color: #1e1e2f; text-decoration: none;">LinkedIn</a> | 
+            <a href="https://github.com/FelipeVieiraRodrigues" target="_blank" rel="noopener noreferrer" style="color: #1e1e2f; text-decoration: none;">GitHub</a>
+        </p>
     </section>
 
     <footer>
         <p>&copy; 2025 Felipe Vieira Rodrigues. Todos os direitos reservados.</p>
     </footer>
+
+    <script type="text/javascript">
+        (function() {
+
+            emailjs.init("q2Y8_OS4E2r0irjoj");
+        })();
+
+        window.onload = function() {
+
+            document.querySelector('input[name="time"]').value = new Date().toLocaleString();
+
+            document.getElementById('contact-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(this);
+                console.log('Dados do formulário sendo enviados:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(key + ': ' + value);
+                }
+
+                emailjs.sendForm('service_Felipe', 'template_178rj6o', this)
+                    .then(function(response) {
+                        console.log('SUCESSO!', response.status, response.text);
+                        alert('Mensagem enviada com sucesso! Em breve entrarei em contato.');
+                        document.getElementById('contact-form').reset();
+                    }, function(error) {
+                        console.log('ERRO NO ENVIO...', error);
+                        alert('Falha no envio da mensagem. Tente novamente ou entre em contato diretamente por e-mail: felipevieirar@yahoo.com.br\nErro: ' + JSON.stringify(error));
+                    });
+            });
+        };
+    </script>
 </body>
 </html>
